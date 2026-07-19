@@ -1,45 +1,68 @@
 import java.util.Stack;
 
+/**
+ * TextEditor - simulasi editor teks sederhana dengan fitur Undo/Redo.
+ * Menggunakan dua Stack<String>: satu untuk menyimpan histori (undo),
+ * satu lagi untuk menyimpan perubahan yang di-undo (redo).
+ */
 public class TextEditor {
-    private String teksSaatIni;
+
+    private String currentText;
     private Stack<String> undoStack;
     private Stack<String> redoStack;
 
+    // Constructor: inisialisasi editor dengan teks kosong dan stack kosong
     public TextEditor() {
-        teksSaatIni = "";
-        undoStack = new Stack<>();
-        redoStack = new Stack<>();
+        this.currentText = "";
+        this.undoStack = new Stack<>();
+        this.redoStack = new Stack<>();
     }
 
-    // Menambahkan teks baru, menyimpan versi sebelumnya ke undoStack
-    public void tambahTeks(String teksBaru) {
-        undoStack.push(teksSaatIni);
-        teksSaatIni = teksBaru;
+    /**
+     * Menambahkan teks baru ke teks yang sedang aktif.
+     * Sebelum berubah, simpan kondisi lama ke undoStack.
+     * redoStack dikosongkan karena histori redo jadi tidak valid
+     * begitu ada perubahan baru.
+     */
+    public void tambahTeks(String teks) {
+        undoStack.push(currentText);
+        currentText = currentText + teks;
         redoStack.clear();
     }
 
-    // Mengembalikan ke kondisi teks sebelum perubahan terakhir
+    /**
+     * Undo: mengembalikan teks ke kondisi sebelum perubahan terakhir.
+     * Kondisi saat ini disimpan ke redoStack supaya bisa di-redo nanti.
+     */
     public void undo() {
         if (undoStack.isEmpty()) {
             System.out.println("Tidak ada histori untuk di-undo.");
             return;
         }
-        redoStack.push(teksSaatIni);
-        teksSaatIni = undoStack.pop();
+        redoStack.push(currentText);
+        currentText = undoStack.pop();
     }
 
-    // Mengembalikan perubahan yang telah di-undo
+    /**
+     * Redo: mengembalikan perubahan yang sebelumnya di-undo.
+     * Kondisi saat ini disimpan ke undoStack supaya masih bisa di-undo lagi.
+     */
     public void redo() {
         if (redoStack.isEmpty()) {
             System.out.println("Tidak ada histori untuk di-redo.");
             return;
         }
-        undoStack.push(teksSaatIni);
-        teksSaatIni = redoStack.pop();
+        undoStack.push(currentText);
+        currentText = redoStack.pop();
     }
 
     // Menampilkan teks yang sedang aktif saat ini
     public void tampilkanTeksSaatIni() {
-        System.out.println("Teks saat ini: \"" + teksSaatIni + "\"");
+        System.out.println("Teks saat ini: \"" + currentText + "\"");
+    }
+
+    // Getter untuk keperluan integrasi/testing tambahan jika diperlukan
+    public String getCurrentText() {
+        return currentText;
     }
 }

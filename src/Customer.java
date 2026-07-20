@@ -1,8 +1,14 @@
 public class Customer {
+    private int id;
     private String nama;
 
-    public Customer(String nama) {
+    public Customer(int id, String nama) {
+        this.id = id;
         this.nama = nama;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getNama() {
@@ -11,6 +17,6 @@ public class Customer {
 
     @Override
     public String toString() {
-        return nama;
+        return id + " - " + nama;
     }
 }
